@@ -1,0 +1,30 @@
+{% extends 'layout/user_base.html' %}
+
+{% block title %}
+  Update Blog Post
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Update Blog Post</h2>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <form method="POST" class="border p-4 rounded shadow-sm">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+          <label for="title" class="form-label">Title:</label>
+          <input type="text" class="form-control" name="title" value="{{ blog.title }}" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="content" class="form-label">Content:</label>
+          <textarea class="form-control" name="content" rows="6" required>{{ blog.content }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Update Blog</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends 'layout/user_base.html' %}
+
+{% block title %}
+  EKSMS - Dashboard
+{% endblock %}
+<style>
+  .blogging {
+    border-radius: 5px;
+    /* Add a border radius */
+    padding: 20px;
+    /* Add some padding */
+    margin: 10px;
+    /* Add some margin */
+    background-color: #f9f9f9;
+    /* Add a light gray background color */
+    box-shadow: 0px 5px 10px rgb(117 94 86);
+    /* Add a shadow effect */
+    transition: box-shadow 0.3s ease-in-out;
+    /* Add a transition effect for the shadow */
+    height: 350px !important;
+  }
+  .avatar-online {
+    width: 200px;
+    /* Set width */
+    height: 200px;
+    /* Set height */
+    object-fit: cover;
+    /* Ensure the image covers the area */
+    border-radius: 50%;
+    /* Make the image circular */
+  }
+</style>
+
+{% block content %}
+  {% load static %}
+  <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+      <!-- Menu -->
+      <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+        <div class="app-brand demo">
+          <h1 class="fw-bolder text-info">Blogging</h1>
+        </div>
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-xl-none bg-primary rounded-circle"><i class="bx bx-chevron-left bx-sm align-middle text-white"></i></a>
+
+        <div class="menu-inner-shadow"></div>
+
+        <ul class="menu-inner py-1">
+          <!-- Dashboard -->
+          <li class="menu-item active">
+            <a href="#" class="menu-link">
+              <i class="menu-icon tf-icons bx bx-home-circle"></i>
+              <div data-i18n="Analytics">Blog App</div>
+            </a>
+          </li>
+
+          <!-- Vertical Nav Pills -->
+          <li class="menu-item">
+            <ul class="nav nav-pills flex-column mt-1" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="boxicons-tab1" data-bs-toggle="tab" href="#boxicons1" role="tab" aria-controls="boxicons1" aria-selected="true">Daily Blog</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </aside>
+      <!-- /Menu -->
+
+      <!-- Layout container -->
+      <div class="layout-page">
+        <!-- Navbar -->
+        <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+          <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+            <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)"><i class="bx bx-menu bx-sm"></i></a>
+          </div>
+
+          <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+            <!-- Search -->
+            <div class="navbar-nav align-items-center">
+              <div class="nav-item d-flex align-items-center">
+                <i class="bx bx-search fs-4 lh-0"></i>
+                <input type="text" class="form-control border-0 shadow-none" placeholder="Search..." aria-label="Search..." />
+              </div>
+            </div>
+            <!-- /Search -->
+
+            <ul class="navbar-nav flex-row align-items-center ms-auto">
+              <!-- User -->
+              <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                  <div class="avatar avatar-online">
+                    <img src="{% static 'assets/img/avatars/1.png' %}" alt="User Avatar" class="w-px-40 h-auto rounded-circle" />
+                  </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li>
+                    <a class="dropdown-item" href="#">
+                      <div class="d-flex">
+                        <div class="flex-shrink-0 me-3">
+                          <div class="avatar avatar-online">
+                            <img src="{% static 'assets/img/avatars/1.png' %}" alt class="w-px-40 h-auto rounded-circle" />
+                          </div>
+                        </div>
+                        <div class="flex-grow-1">
+                          <span class="fw-semibold d-block">{{ user.username }}</span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'profile' %}">
+                      <i class="bx bx-user me-2"></i>
+                      <span class="align-middle">My Profile</span>
+                    </a>
+                  </li>
+                  <li>
+                    <div class="dropdown-divider"></div>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'logout' %}">
+                      <i class="bx bx-power-off me-2"></i>
+                      <span class="align-middle">Log Out</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <!-- /Navbar -->
+        <!-- User Profile Modal -->
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="myTabContent">
+          <!-- Tab 1: Punch In/Out -->
+          <div class="tab-pane fade show active" id="boxicons1" role="tabpanel" aria-labelledby="boxicons-tab1">
+            <div class="container">
+              <h2 class="text-center mb-4">Blog Posts</h2>
+
+              {% if page_obj %}
+                <div class="row">
+                  {% for blog in page_obj %}
+                    <div class="col-lg-4 col-md-6 col-12 mb-4">
+                      <div class="card shadow-sm border-light rounded blogging h-100">
+                        <div class="card-body d-flex flex-column">
+                          <h5 class="card-title"><a href="{% url 'blog_detail' blog.id %}" class="text-decoration-none text-dark">{{ blog.title }}</a></h5>
+                          <p class="card-text flex-grow-1">{{ blog.content|truncatewords:25 }}</p>
+                          <p class="text-muted">Posted on {{ blog.created_at|date:'F j, Y' }} by {{ blog.author.username }}</p>
+                        </div>
+                        <div class="card-footer pt-0 text-muted">
+                          <span><i class="fas fa-comments"></i> {{ blog.comments.count }} Comments</span>
+                          <button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#commentModal{{ blog.id }}">Leave a Comment</button>
+                        </div>
+                      </div>
+
+                      <!-- Modal for commenting -->
+                      <div class="modal fade" id="commentModal{{ blog.id }}" tabindex="-1" aria-labelledby="commentModalLabel{{ blog.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="commentModalLabel{{ blog.id }}">Leave a Comment</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <div class="mt-3">
+                                <h6>Comments:</h6>
+                                <ul class="list-group list-group-flush">
+                                  {% for comment in blog.comments.all %}
+                                    <li class="list-group-item">
+                                      <p>{{ comment.content }}</p>
+                                      <small class="text-muted">- commented by {{ comment.user.username }}</small>
+                                    </li>
+                                  {% empty %}
+                                    <li class="list-group-item text-center">No comments yet. Be the first to comment!</li>
+                                  {% endfor %}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+
+                <!-- Pagination controls -->
+                <nav aria-label="Page navigation">
+                  <ul class="pagination justify-content-center mt-4">
+                    {% if page_obj.has_previous %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="First"><span aria-hidden="true">&laquo;&laquo;</span></a>
+                      </li>
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+                      </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                      <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                      </li>
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+                      </li>
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
+                      </li>
+                    {% endif %}
+                  </ul>
+                </nav>
+              {% else %}
+                <div class="alert alert-warning text-center" role="alert">No blog posts available.</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Check if the user has a profile image or other profile information
+      var profileImage = '{{ user_profile.profile_image }}'
+      var profileFormContainer = document.getElementById('profileFormContainer')
+      var profileContentContainer = document.getElementById('profileContentContainer')
+    
+      // If the profile image is not present, show the profile form
+      if (!profileImage) {
+        profileFormContainer.classList.remove('d-none')
+        profileContentContainer.classList.add('d-none')
+      } else {
+        profileFormContainer.classList.add('d-none')
+        profileContentContainer.classList.remove('d-none')
+      }
+    })
+  </script>
+{% endblock %}
